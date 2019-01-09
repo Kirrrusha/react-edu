@@ -7,6 +7,23 @@ import {
     LOAD_ALL_ARTICLES, LOAD_ARTICLE, LOAD_ARTICLE_COMMENTS, START, SUCCESS
 } from '../constants';
 
+export function checkAndLoadCommentsForPage(page) {
+    return (dispatch, getState) => {
+        const {
+            comments: {pagination}
+        } = getState();
+        if (pagination.getIn([page, 'loading']) || pagination.getIn([page, 'ids']))
+            return
+
+        dispatch({
+            type: LOAD_COMMENTS_FOR_PAGE,
+            payload: {page},
+            callAPI: `api/comments?limit=5&offset=${(page - 1) *5}`
+        })
+    }
+}
+
+
 export function increment() {
     return {
         type: INCREMENT

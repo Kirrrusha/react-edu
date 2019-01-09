@@ -4,6 +4,7 @@ import Filter from './components/filters';
 import Counter from './counter';
 import {Route, NavLink} from "react-router-dom";
 import ArticlesPage from "./components/routes/articles";
+import CommentsPage from "./components/routes/comments-page";
 import {Switch} from "react-router-dom";
 
 class App extends Component {
@@ -29,6 +30,8 @@ class App extends Component {
           <Route path="/counter" component={Counter} exact/>
           <Route path="/filters" component={Filter}/>
           <Route path="/articles" component={ArticlesPage}/>
+          <Route path="/comments" component={CommentsPage}/>
+          <Route path="*" render={() => <h1>Not Found Page</h1>}/>
         </Switch>
       </div>
     )
