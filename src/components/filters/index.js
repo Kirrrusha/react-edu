@@ -1,18 +1,23 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import SelectFilter from './select';
+import DateRange from './date-picker';
 
 class Filter extends Component {
-    static defaultProps = {};
 
-    static propTypes = {};
+  static propTypes = {
+    articles: PropTypes.array.isRequired
+  };
 
-    state = {};
-
-    render() {
-        return (
-            <div></div>
-        );
-    }
+  render() {
+    console.log(this.props);
+    return (
+      <div>
+        <SelectFilter articles={this.props.articles}/>
+        <DateRange/>
+      </div>
+    );
+  }
 }
 
-export default filter;
+export default Filter;

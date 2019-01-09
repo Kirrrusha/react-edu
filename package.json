@@ -2,14 +2,29 @@
   "name": "react-edu",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:3001/",
   "dependencies": {
+    "enzyme": "^3.8.0",
+    "immutable": "^4.0.0-rc.12",
+    "jest-cli": "20",
+    "prop-types": "latest",
     "react": "^16.7.0",
+    "react-addons-css-transition-group": "^15.6.2",
+    "react-day-picker": "^7.2.4",
     "react-dom": "^16.7.0",
-    "react-scripts": "2.1.2"
+    "react-redux": "^6.0.0",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "2.1.2",
+    "react-select": "^2.2.0",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "concurrently \"react-scripts start\" \"npm run api\"",
+    "api": "node simple_api/server.js",
     "build": "react-scripts build",
+    "prettier": "prettier --write \"src/**/*.js\"",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -21,5 +36,11 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "concurrently": "^3.6.0",
+    "enzyme": "^3.8.0",
+    "enzyme-adapter-react-16": "^1.7.1",
+    "thunk": "^0.0.1"
+  }
 }

@@ -2,17 +2,22 @@ import React, {Component} from 'react';
 // import findDOMNode from 'react-dom';
 import CSSTransition from 'react-addons-css-transition-group';
 import PropTypes from 'prop-types';
-import CommentList from './comment-list';
+import {connect} from 'react-redux';
+import CommentList from '../comment-list';
+import './style.css';
+import {deleteArticle, loadArticleById} from '../../ac';
+import Loader from "../common/loader";
+import {articleSelector} from "../../selectors";
 
 class Article extends Component {
     static propTypes = {
         article: PropTypes.shape({
-            id: PropTypes.string.isRequired,
             title: PropTypes.string.isRequired,
             text: PropTypes.string
-        }).isRequired,
+        }),
         isOpen: PropTypes.bool,
-        toggleOpen: PropTypes.func
+        toggleOpen: PropTypes.func,
+        deleteArticle: PropTypes.func
     }
 
     state = {
@@ -20,67 +25,64 @@ class Article extends Component {
     }
 
     componentDidCatch(err) {
-        console.log(err);
+        console.log('---', err);
         this.setState({
             hasError: true
         })
     }
 
-    componentWillReceiveProps(nextProps) {
-        // console.log('updating', this.props.isOpen, nextProps.isOpen);
-    }
-
-    componentWillMount() {
-        // console.log('mounting');
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return nextProps.isOpen !== this.props.isOpen;
-    }
-
     render() {
-        const {article, isOpen, toggleOpen} = this.props;
-        console.log('update article');
+        const {article, isOpen} = this.props;
+        if (!article) return null;
         return (
-            <div ref={this.setContainerRef}>
+            <div>
                 <h3>{article.title}</h3>
-                <button onClick={toggleOpen}>{isOpen ? 'Close' : 'Open'}</button>
+                {/*<button onClick={this.handleClick}>{isOpen ? 'Close' : 'Open'}</button>*/}
+                <button onClick={this.handleDelete}>delete me</button>
                 <CSSTransition
                     transitionName="article"
-                    transitionEnterTimeout = {20000}
-                    transitionLeaveTimeout = {20000}
+                    transitionAppear
+                    transitionEnterTimeout={500}
+                    transitionAppearTimeout={1000}
+                    transitionLeaveTimeout={300}
                 >
-                    {this.getBody()}
+                    {this.body}
                 </CSSTransition>
             </div>
         )
     }
 
-    setContainerRef = ref => {
-        this.container = ref;
-        // console.log(ref);
-    }
+    handleClick = () => this.props.toggleOpen(this.props.article.id)
 
-    componentDidMount() {
-        // console.log('mounted');
-    }
+    handleDelete = () => {
+        const {article, deleteArticle} = this.props;
+        deleteArticle(article.id);
+    };
 
-    getBody() {
-        const {article, isOpen} = this.props;
+
+    get body() {
+        const {isOpen, article} = this.props;
         if (!isOpen) return null;
-        if (this.state.hasError) return <div>Some Error in this article</div>
+        if (this.state.hasError) return <div>Some Error in this article</div>;
+        if (article.loading) return <Loader />;
+
         return (
-            <section>
+            <section className="test__article--body">
                 {article.text}
-                <CommentList comments={article.comments} ref={this.setCommentRef}/>
+                <CommentList article={article}/>
             </section>
         )
     }
 
-    setCommentRef = ref => {
-        // console.log(ref);
-        // console.log(findDOMNode(ref));
+    componentDidMount() {
+        const {article, id, loadArticleById} = this.props;
+        if (!article || !article.text) loadArticleById(id);
     }
+
 }
 
-export default Article;
+export default connect(
+  (state, props) => ({
+      article: articleSelector(state, props)
+  }),
+  {deleteArticle, loadArticleById})(Article);
