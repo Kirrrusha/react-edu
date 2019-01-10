@@ -33,7 +33,7 @@ class CommentsPagination extends Component {
 
   getCommentItems() {
     const { comments, loading } = this.props
-    if (loading || !comments) return <Loader />
+    if (loading || !comments) return <Loader />;
     const commentItems = comments.map((id) => (
       <li key={id}>
         <Comment id={id} />
